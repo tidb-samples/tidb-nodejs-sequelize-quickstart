@@ -6,7 +6,7 @@ const logger = getLogger('lib/tidb');
 
 let sequelize: Sequelize | null = null;
 
-export function connect() {
+export function initSequelize() {
   return new Sequelize({
     dialect: 'mysql',
     host: process.env.TIDB_HOST || 'localhost',
@@ -22,7 +22,7 @@ export function connect() {
 
 export async function getSequelize() {
   if (!sequelize) {
-    sequelize = connect();
+    sequelize = initSequelize();
     try {
       await sequelize.authenticate();
       logger.info('Connection has been established successfully.');
