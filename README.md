@@ -197,6 +197,9 @@ yarn start
 
 If everything goes well, you will see the output like this:
 
+<details>
+  <summary>Click to expand the details</summary>
+
 ```bash
 INFO (app/10117): Getting sequelize instance...
 Executing (default): SELECT 1+1 AS result
@@ -266,3 +269,5 @@ INFO (app/10117): Closed sequelize instance.
 INFO (app/10117): Done.
 ✨  Done in 9.87s.
 ```
+
+</details>
