@@ -1,5 +1,8 @@
 import { Sequelize } from 'sequelize';
 import 'dotenv/config';
+import { getLogger } from './logger';
+
+const logger = getLogger('lib/tidb');
 
 let sequelize: Sequelize | null = null;
 
@@ -22,9 +25,10 @@ export async function getSequelize() {
     sequelize = connect();
     try {
       await sequelize.authenticate();
-      console.log('Connection has been established successfully.');
+      logger.info('Connection has been established successfully.');
     } catch (error) {
-      console.error('Unable to connect to the database:', error);
+      logger.error('Unable to connect to the database:');
+      logger.error(error);
       throw error;
     }
   }
