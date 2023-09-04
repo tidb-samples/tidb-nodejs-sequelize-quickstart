@@ -24,17 +24,24 @@ Refer to [src/lib/tidb.ts](src/lib/tidb.ts).
 
 ```typescript
 import { Sequelize } from 'sequelize';
+import { readFileSync } from 'fs';
 
 export function initSequelize() {
   return new Sequelize({
     dialect: 'mysql',
-    host: process.env.TIDB_HOST || 'localhost', // TiDB host, for example: {gateway-region}.aws.tidbcloud.com
-    port: Number(process.env.TIDB_PORT) || 4000, // TiDB port, default: 4000
-    username: process.env.TIDB_USER || 'root', // TiDB user, for example: {prefix}.root
-    password: process.env.TIDB_PASSWORD || 'root', // TiDB password
-    database: process.env.TIDB_DB_NAME || 'test', // TiDB database name, default: test
+    host: process.env.TIDB_HOST || 'localhost',
+    port: Number(process.env.TIDB_PORT) || 4000,
+    username: process.env.TIDB_USER || 'root',
+    password: process.env.TIDB_PASSWORD || 'root',
+    database: process.env.TIDB_DB_NAME || 'test',
     dialectOptions: {
-      ssl: { minVersion: 'TLSv1.2', rejectUnauthorized: true }, // TiDB Serverless is deployed with TLS enabled
+      ssl: {
+        minVersion: 'TLSv1.2',
+        rejectUnauthorized: true,
+        ca: process.env.TIDB_CA_PATH
+          ? readFileSync(process.env.TIDB_CA_PATH)
+          : undefined,
+      },
     },
   });
 }
@@ -187,6 +194,7 @@ cp .env.example .env
 # TIDB_USER='{prefix}.root'
 # TIDB_PASSWORD='{password}'
 # TIDB_DB_NAME='test'
+# TIDB_CA_PATH='{path/to/ca.pem}'
 ```
 
 4. Run the project locally
