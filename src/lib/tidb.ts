@@ -1,7 +1,7 @@
 import { Sequelize } from 'sequelize';
 import 'dotenv/config';
 import { getLogger } from './logger';
-
+import { readFileSync } from 'fs';
 const logger = getLogger('lib/tidb');
 
 let sequelize: Sequelize | null = null;
@@ -15,7 +15,13 @@ export function initSequelize() {
     password: process.env.TIDB_PASSWORD || 'root',
     database: process.env.TIDB_DB_NAME || 'test',
     dialectOptions: {
-      ssl: { minVersion: 'TLSv1.2', rejectUnauthorized: true },
+      ssl: {
+        minVersion: 'TLSv1.2',
+        rejectUnauthorized: true,
+        ca: process.env.TIDB_CA_PATH
+          ? readFileSync(process.env.TIDB_CA_PATH)
+          : undefined,
+      },
     },
   });
 }
