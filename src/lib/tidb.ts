@@ -16,7 +16,7 @@ export function initSequelize() {
     database: process.env.TIDB_DB_NAME || 'test',
     dialectOptions: {
       ssl:
-        process.env?.TIDB_SSL_MODE === 'true'
+        process.env?.TIDB_ENABLE_SSL === 'true'
           ? {
               minVersion: 'TLSv1.2',
               rejectUnauthorized: true,
