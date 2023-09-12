@@ -20,6 +20,10 @@ This is a quickstart project for using TiDB Serverless with Node.js, Sequelize a
 
 ### 1. Connect to TiDB Serverless
 
+> Note:
+>
+> If you choose self-hosted TiDB, you should set the `TIDB_ENABLE_SSL` environment variable to `false`, and set the `CA_PATH` environment variable empty. Or remove the `TIDB_ENABLE_SSL` and `CA_PATH` in `.env` file.
+
 Refer to [src/lib/tidb.ts](src/lib/tidb.ts).
 
 ```typescript
@@ -32,16 +36,19 @@ export function initSequelize() {
     host: process.env.TIDB_HOST || 'localhost',
     port: Number(process.env.TIDB_PORT) || 4000,
     username: process.env.TIDB_USER || 'root',
-    password: process.env.TIDB_PASSWORD || 'root',
+    password: process.env.TIDB_PASSWORD || '',
     database: process.env.TIDB_DB_NAME || 'test',
     dialectOptions: {
-      ssl: {
-        minVersion: 'TLSv1.2',
-        rejectUnauthorized: true,
-        ca: process.env.TIDB_CA_PATH
-          ? readFileSync(process.env.TIDB_CA_PATH)
-          : undefined,
-      },
+      ssl:
+        process.env?.TIDB_SSL_MODE === 'true'
+          ? {
+              minVersion: 'TLSv1.2',
+              rejectUnauthorized: true,
+              ca: process.env.TIDB_CA_PATH
+                ? readFileSync(process.env.TIDB_CA_PATH)
+                : undefined,
+            }
+          : null,
     },
   });
 }
